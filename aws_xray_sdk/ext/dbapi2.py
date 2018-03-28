@@ -43,7 +43,7 @@ class XRayTracedCursor(wrapt.ObjectProxy):
     @xray_recorder.capture()
     def execute(self, query, *args, **kwargs):
 
-        add_sql_meta(self._xray_meta)
+        add_sql_meta(self._xray_meta, query)
         return self.__wrapped__.execute(query, *args, **kwargs)
 
     @xray_recorder.capture()
@@ -59,7 +59,7 @@ class XRayTracedCursor(wrapt.ObjectProxy):
         return self.__wrapped__.callproc(proc, args)
 
 
-def add_sql_meta(meta):
+def add_sql_meta(meta, query=None):
 
     subsegment = xray_recorder.current_subsegment()
 
@@ -73,4 +73,5 @@ def add_sql_meta(meta):
     if sql_meta.get('name', None):
         del sql_meta['name']
     subsegment.set_sql(sql_meta)
+    subsegment.put_annotation("query", query);
     subsegment.namespace = 'remote'

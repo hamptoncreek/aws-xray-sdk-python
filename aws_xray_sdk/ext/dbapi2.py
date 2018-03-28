@@ -73,5 +73,5 @@ def add_sql_meta(meta, query=None):
     if sql_meta.get('name', None):
         del sql_meta['name']
     subsegment.set_sql(sql_meta)
-    subsegment.put_annotation("query", query);
+    subsegment.put_annotation("query", query[:100])
     subsegment.namespace = 'remote'
